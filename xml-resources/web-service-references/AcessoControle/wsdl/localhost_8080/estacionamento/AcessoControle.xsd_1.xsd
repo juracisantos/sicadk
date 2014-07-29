@@ -1,0 +1,236 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is Metro/2.3 (tags/2.3-7528; 2013-04-29T19:34:10+0000) JAXWS-RI/2.2.8 JAXWS/2.2 svn-revision#unknown. --><xs:schema xmlns:tns="http://ws.controlador.dynatec.com.br/" xmlns:ns1="br.com.dynatec.helper.fianceiro.ExtratoDiario" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://ws.controlador.dynatec.com.br/">
+
+<xs:import namespace="br.com.dynatec.helper.fianceiro.ExtratoDiario" schemaLocation="http://localhost:8080/estacionamento/AcessoControle?xsd=2"/>
+
+<xs:element name="consultaCartao" type="tns:consultaCartao"/>
+
+<xs:element name="consultaCartaoResponse" type="tns:consultaCartaoResponse"/>
+
+<xs:element name="extratoDia" type="tns:extratoDia"/>
+
+<xs:element name="extratoDiaResponse" type="tns:extratoDiaResponse"/>
+
+<xs:element name="extratoDiario" type="ns1:extrado"/>
+
+<xs:element name="login" type="tns:login"/>
+
+<xs:element name="loginResponse" type="tns:loginResponse"/>
+
+<xs:element name="movimento" type="tns:movimento"/>
+
+<xs:element name="movimentoCaixaHelperVO" type="tns:movimentoCaixaHelperVO"/>
+
+<xs:element name="processaCartao" type="tns:processaCartao"/>
+
+<xs:element name="processaCartaoResponse" type="tns:processaCartaoResponse"/>
+
+<xs:element name="recuperaTabelas" type="tns:recuperaTabelas"/>
+
+<xs:element name="recuperaTabelasResponse" type="tns:recuperaTabelasResponse"/>
+
+<xs:element name="registrarMovimento" type="tns:registrarMovimento"/>
+
+<xs:element name="registrarMovimentoResponse" type="tns:registrarMovimentoResponse"/>
+
+<xs:element name="retornaTabelasHelperVO" type="tns:retornaTabelasHelperVO"/>
+
+<xs:element name="retornoConsultaCartaoVO" type="tns:retornoConsultaCartaoVO"/>
+
+<xs:element name="retornoHelper" type="tns:retornoHelper"/>
+
+<xs:element name="retornoLoginVO" type="tns:retornoLoginVO"/>
+
+<xs:element name="tabela" type="tns:tabela"/>
+
+<xs:complexType name="login">
+<xs:sequence>
+<xs:element name="login" type="xs:string" minOccurs="0"/>
+<xs:element name="senha" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="loginResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:retornoLoginVO" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="retornoLoginVO">
+<xs:complexContent>
+<xs:extension base="tns:retornoHelper">
+<xs:sequence>
+<xs:element name="pessoa_nome" type="xs:string" minOccurs="0"/>
+<xs:element name="usuario_grupo" type="xs:string" minOccurs="0"/>
+<xs:element name="usuario_id" type="xs:string" minOccurs="0"/>
+<xs:element name="usuario_nome" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="retornoHelper" abstract="true">
+<xs:sequence>
+<xs:element name="mensagem" type="xs:string" minOccurs="0"/>
+<xs:element name="status" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="registrarMovimento">
+<xs:sequence>
+<xs:element name="movimentoCaixa" type="tns:movimentoCaixaHelperVO" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="movimentoCaixaHelperVO">
+<xs:complexContent>
+<xs:extension base="tns:retornoHelper">
+<xs:sequence>
+<xs:element name="ativo" type="xs:boolean" minOccurs="0"/>
+<xs:element name="createdAt" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="dataMovimento" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="desconto" type="xs:double" minOccurs="0"/>
+<xs:element name="id" type="xs:int" minOccurs="0"/>
+<xs:element name="mensalisa" type="xs:boolean" minOccurs="0"/>
+<xs:element name="mensalista_id" type="xs:int" minOccurs="0"/>
+<xs:element name="nomePessoa" type="xs:string" minOccurs="0"/>
+<xs:element name="observacao" type="xs:string" minOccurs="0"/>
+<xs:element name="tipoMovimento" type="tns:tipoMovimento" minOccurs="0"/>
+<xs:element name="troco" type="xs:double" minOccurs="0"/>
+<xs:element name="updatedAt" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="usuario_id" type="xs:int" minOccurs="0"/>
+<xs:element name="valor" type="xs:double" minOccurs="0"/>
+<xs:element name="valorAReceber" type="xs:double" minOccurs="0"/>
+<xs:element name="valorRecebido" type="xs:double" minOccurs="0"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="registrarMovimentoResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:movimentoCaixaHelperVO" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="processaCartao">
+<xs:sequence>
+<xs:element name="cartao" type="xs:string" minOccurs="0"/>
+<xs:element name="dataTransasaoFinanceira" type="xs:string" minOccurs="0"/>
+<xs:element name="codTabela" type="xs:int" minOccurs="0"/>
+<xs:element name="desconto" type="xs:double" minOccurs="0"/>
+<xs:element name="valorRecebido" type="xs:double" minOccurs="0"/>
+<xs:element name="usuario_id" type="xs:int" minOccurs="0"/>
+<xs:element name="placaCarro" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="processaCartaoResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:retornoConsultaCartaoVO" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="retornoConsultaCartaoVO">
+<xs:complexContent>
+<xs:extension base="tns:retornoHelper">
+<xs:sequence>
+<xs:element name="cartao" type="xs:string" minOccurs="0"/>
+<xs:element name="cpf" type="xs:string" minOccurs="0"/>
+<xs:element name="desconboAcumulado" type="xs:double" minOccurs="0"/>
+<xs:element name="descontoAculumado" type="xs:double" minOccurs="0"/>
+<xs:element name="descontoAtual" type="xs:double" minOccurs="0"/>
+<xs:element name="entrada" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="limiteParaSair" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="mensalista" type="xs:boolean"/>
+<xs:element name="nomeMensalista" type="xs:string" minOccurs="0"/>
+<xs:element name="permanencia" type="xs:string" minOccurs="0"/>
+<xs:element name="placaVeiculo" type="xs:string" minOccurs="0"/>
+<xs:element name="proximoVencimento" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="qtdCartoes" type="xs:int" minOccurs="0"/>
+<xs:element name="saida" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="tabela_id" type="xs:int" minOccurs="0"/>
+<xs:element name="tipoTransacao" type="xs:string" minOccurs="0"/>
+<xs:element name="troco" type="xs:double" minOccurs="0"/>
+<xs:element name="ultimoValorPago" type="xs:double" minOccurs="0"/>
+<xs:element name="valorCobrado" type="xs:double" minOccurs="0"/>
+<xs:element name="valorJaPago" type="xs:double" minOccurs="0"/>
+<xs:element name="valorReceber" type="xs:double" minOccurs="0"/>
+<xs:element name="valorRecebido" type="xs:double" minOccurs="0"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="recuperaTabelas">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="recuperaTabelasResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:retornaTabelasHelperVO" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="retornaTabelasHelperVO">
+<xs:complexContent>
+<xs:extension base="tns:retornoHelper">
+<xs:sequence>
+<xs:element name="tabelas" type="tns:tabela" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="tabela">
+<xs:sequence>
+<xs:element name="id" type="xs:int" minOccurs="0"/>
+<xs:element name="nome" type="xs:string" minOccurs="0"/>
+<xs:element name="valor" type="xs:double" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="extratoDia">
+<xs:sequence>
+<xs:element name="dataTransacao" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="extratoDiaResponse">
+<xs:sequence>
+<xs:element name="return" type="ns1:extrado" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+
+<xs:complexType name="movimento">
+<xs:sequence>
+<xs:element name="tipoMovimento" type="xs:string" minOccurs="0"/>
+<xs:element name="valor" type="xs:double" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="consultaCartao">
+<xs:sequence>
+<xs:element name="cartao" type="xs:string" minOccurs="0"/>
+<xs:element name="dataTransasaoFinanceira" type="xs:string" minOccurs="0"/>
+<xs:element name="codTabela" type="xs:int" minOccurs="0"/>
+<xs:element name="desconto" type="xs:double" minOccurs="0"/>
+<xs:element name="valorRecebido" type="xs:double" minOccurs="0"/>
+<xs:element name="usuario_id" type="xs:int" minOccurs="0"/>
+<xs:element name="placaCarro" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="consultaCartaoResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:retornoConsultaCartaoVO" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:simpleType name="tipoMovimento">
+<xs:restriction base="xs:string">
+<xs:enumeration value="DEPOSITO"/>
+<xs:enumeration value="RETIRADA"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:schema>

@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is Metro/2.3 (tags/2.3-7528; 2013-04-29T19:34:10+0000) JAXWS-RI/2.2.8 JAXWS/2.2 svn-revision#unknown. --><xs:schema xmlns:ns1="http://ws.controlador.dynatec.com.br/" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="br.com.dynatec.helper.fianceiro.ExtratoDiario">
+
+<xs:import namespace="http://ws.controlador.dynatec.com.br/" schemaLocation="http://localhost:8080/estacionamento/WsMovimentoCaixa?xsd=1"/>
+
+<xs:complexType name="extrado">
+<xs:complexContent>
+<xs:extension base="ns1:retornoHelper">
+<xs:sequence>
+<xs:element name="dia" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="movimentos" type="ns1:movimento" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="saldoAtual" type="xs:double" minOccurs="0"/>
+<xs:element name="saldoInicial" type="xs:double" minOccurs="0"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+</xs:schema>
