@@ -19,7 +19,7 @@
     <target name="wsimport-client-AcessoControle" depends="wsimport-init">
         <mkdir dir="${build.generated.dir}/jax-wsCache/AcessoControle"/>
         <property name="wsdl-AcessoControle" location="xml-resources/web-service-references/AcessoControle/wsdl/localhost_8080/estacionamento/AcessoControle.wsdl"/>
-        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/AcessoControle" destdir="${build.generated.dir}/jax-wsCache/AcessoControle" wsdl="${wsdl-AcessoControle}" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://localhost:8080/estacionamento/AcessoControle?WSDL" xnocompile="true" xendorsed="true">
+        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/AcessoControle" destdir="${build.generated.dir}/jax-wsCache/AcessoControle" wsdl="${wsdl-AcessoControle}" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://localhost:8080/estacionamento/AcessoControle?wsdl" xnocompile="true" xendorsed="true">
             <depends file="${wsdl-AcessoControle}"/>
             <produces dir="${build.generated.dir}/jax-wsCache/AcessoControle"/>
         </wsimport>

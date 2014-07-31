@@ -7,6 +7,7 @@ package br.com.dyantec.gui.acesso;
 
 import br.com.dyantec.gui.mensalista.JfrmPagamentoMensalista;
 import br.com.dyantec.gui.movimentoCaixa.JFrameMovimentoCaixa;
+import br.com.dyantec.util.Parametros;
 import br.com.dyantec.util.Util;
 import br.com.dynatec.controlador.ws.RetornaTabelasHelperVO;
 import br.com.dynatec.controlador.ws.RetornoConsultaCartaoVO;
@@ -20,6 +21,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.ws.WebServiceFeature;
 
 /**
  *
@@ -588,13 +590,14 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
     }
 
     private static RetornoConsultaCartaoVO processaCartao(java.lang.String cartao, java.lang.String dataTransasaoFinanceira, java.lang.Integer codTabela, java.lang.Double desconto, java.lang.Double valorRecebido, java.lang.Integer usuarioId, java.lang.String placaCarro) {
-        br.com.dynatec.controlador.ws.AcessoControle_Service service = new br.com.dynatec.controlador.ws.AcessoControle_Service();
+        br.com.dynatec.controlador.ws.AcessoControle_Service service = new br.com.dynatec.controlador.ws.AcessoControle_Service(Parametros.WSDL_WEBSERVICE);
+        
         br.com.dynatec.controlador.ws.AcessoControle port = service.getAcessoControlePort();
         return port.processaCartao(cartao, dataTransasaoFinanceira, codTabela, desconto, valorRecebido, usuarioId, placaCarro);
     }
 
     private static RetornoConsultaCartaoVO consultaCartao(java.lang.String cartao, java.lang.String dataTransasaoFinanceira, java.lang.Integer codTabela, java.lang.Double desconto, java.lang.Double valorRecebido, java.lang.Integer usuarioId, java.lang.String placaCarro) {
-        br.com.dynatec.controlador.ws.AcessoControle_Service service = new br.com.dynatec.controlador.ws.AcessoControle_Service();
+        br.com.dynatec.controlador.ws.AcessoControle_Service service = new br.com.dynatec.controlador.ws.AcessoControle_Service(Parametros.WSDL_WEBSERVICE);
         br.com.dynatec.controlador.ws.AcessoControle port = service.getAcessoControlePort();
         return port.consultaCartao(cartao, dataTransasaoFinanceira, codTabela, desconto, valorRecebido, usuarioId, placaCarro);
     }

@@ -8,8 +8,9 @@
     <system systemId="http://localhost:8080/estacionamento/WsMovimentoCaixa?wsdl" uri="xml-resources/web-service-references/WsMovimentoCaixa/wsdl/localhost_8080/estacionamento/WsMovimentoCaixa.wsdl"/>
     <system systemId="http://localhost:8080/estacionamento/WsMovimentoCaixa?xsd=1" uri="xml-resources/web-service-references/WsMovimentoCaixa/wsdl/localhost_8080/estacionamento/WsMovimentoCaixa.xsd_1.xsd"/>
     <system systemId="http://localhost:8080/estacionamento/WsMovimentoCaixa?xsd=2" uri="xml-resources/web-service-references/WsMovimentoCaixa/wsdl/localhost_8080/estacionamento/WsMovimentoCaixa.xsd_2.xsd"/>
-    <system systemId="http://localhost:8080/estacionamento/AcessoControle?wsdl" uri="xml-resources/web-service-references/AcessoControle/wsdl/localhost_8080/estacionamento/AcessoControle.wsdl"/>
     <system systemId="http://localhost:8080/estacionamento/AcessoControle?WSDL" uri="xml-resources/web-service-references/AcessoControle/wsdl/localhost_8080/estacionamento/AcessoControle.wsdl"/>
+    <system systemId="file:/home/jura/projetos/estacionamento/cliente/AcessoControle.wsdl" uri="xml-resources/web-service-references/AcessoControle/wsdl/AcessoControle.wsdl"/>
+    <system systemId="http://localhost:8080/estacionamento/AcessoControle?wsdl" uri="xml-resources/web-service-references/AcessoControle/wsdl/localhost_8080/estacionamento/AcessoControle.wsdl"/>
     <system systemId="http://localhost:8080/estacionamento/AcessoControle?xsd=1" uri="xml-resources/web-service-references/AcessoControle/wsdl/localhost_8080/estacionamento/AcessoControle.xsd_1.xsd"/>
     <system systemId="http://localhost:8080/estacionamento/AcessoControle?xsd=2" uri="xml-resources/web-service-references/AcessoControle/wsdl/localhost_8080/estacionamento/AcessoControle.xsd_2.xsd"/>
 </catalog>

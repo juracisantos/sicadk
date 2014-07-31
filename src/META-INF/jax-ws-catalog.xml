@@ -12,4 +12,5 @@
     <system systemId="http://localhost:8080/estacionamento/WsMovimentoCaixa?xsd=1" uri="wsdl/localhost_8080/estacionamento/WsMovimentoCaixa.xsd_1.xsd"/>
     <system systemId="http://localhost:8080/estacionamento/WsMovimentoCaixa?xsd=2" uri="wsdl/localhost_8080/estacionamento/WsMovimentoCaixa.xsd_2.xsd"/>
     <system systemId="http://localhost:8080/estacionamento/AcessoControle?xsd=2" uri="wsdl/localhost_8080/estacionamento/AcessoControle.xsd_2.xsd"/>
+    <system systemId="file:/home/jura/projetos/estacionamento/cliente/AcessoControle.wsdl" uri="wsdl/AcessoControle.wsdl"/>
 </catalog>

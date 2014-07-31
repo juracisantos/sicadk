@@ -13,18 +13,6 @@
 <message name="loginResponse">
 <part name="parameters" element="tns:loginResponse"/>
 </message>
-<message name="consultaCartao">
-<part name="parameters" element="tns:consultaCartao"/>
-</message>
-<message name="consultaCartaoResponse">
-<part name="parameters" element="tns:consultaCartaoResponse"/>
-</message>
-<message name="processaCartao">
-<part name="parameters" element="tns:processaCartao"/>
-</message>
-<message name="processaCartaoResponse">
-<part name="parameters" element="tns:processaCartaoResponse"/>
-</message>
 <message name="recuperaTabelas">
 <part name="parameters" element="tns:recuperaTabelas"/>
 </message>
@@ -43,18 +31,22 @@
 <message name="extratoDiaResponse">
 <part name="parameters" element="tns:extratoDiaResponse"/>
 </message>
+<message name="consultaCartao">
+<part name="parameters" element="tns:consultaCartao"/>
+</message>
+<message name="consultaCartaoResponse">
+<part name="parameters" element="tns:consultaCartaoResponse"/>
+</message>
+<message name="processaCartao">
+<part name="parameters" element="tns:processaCartao"/>
+</message>
+<message name="processaCartaoResponse">
+<part name="parameters" element="tns:processaCartaoResponse"/>
+</message>
 <portType name="AcessoControle">
 <operation name="login">
 <input wsam:Action="http://ws.controlador.dynatec.com.br/AcessoControle/loginRequest" message="tns:login"/>
 <output wsam:Action="http://ws.controlador.dynatec.com.br/AcessoControle/loginResponse" message="tns:loginResponse"/>
-</operation>
-<operation name="consultaCartao">
-<input wsam:Action="http://ws.controlador.dynatec.com.br/AcessoControle/consultaCartaoRequest" message="tns:consultaCartao"/>
-<output wsam:Action="http://ws.controlador.dynatec.com.br/AcessoControle/consultaCartaoResponse" message="tns:consultaCartaoResponse"/>
-</operation>
-<operation name="processaCartao">
-<input wsam:Action="http://ws.controlador.dynatec.com.br/AcessoControle/processaCartaoRequest" message="tns:processaCartao"/>
-<output wsam:Action="http://ws.controlador.dynatec.com.br/AcessoControle/processaCartaoResponse" message="tns:processaCartaoResponse"/>
 </operation>
 <operation name="recuperaTabelas">
 <input wsam:Action="http://ws.controlador.dynatec.com.br/AcessoControle/recuperaTabelasRequest" message="tns:recuperaTabelas"/>
@@ -68,28 +60,18 @@
 <input wsam:Action="http://ws.controlador.dynatec.com.br/AcessoControle/extratoDiaRequest" message="tns:extratoDia"/>
 <output wsam:Action="http://ws.controlador.dynatec.com.br/AcessoControle/extratoDiaResponse" message="tns:extratoDiaResponse"/>
 </operation>
+<operation name="consultaCartao">
+<input wsam:Action="http://ws.controlador.dynatec.com.br/AcessoControle/consultaCartaoRequest" message="tns:consultaCartao"/>
+<output wsam:Action="http://ws.controlador.dynatec.com.br/AcessoControle/consultaCartaoResponse" message="tns:consultaCartaoResponse"/>
+</operation>
+<operation name="processaCartao">
+<input wsam:Action="http://ws.controlador.dynatec.com.br/AcessoControle/processaCartaoRequest" message="tns:processaCartao"/>
+<output wsam:Action="http://ws.controlador.dynatec.com.br/AcessoControle/processaCartaoResponse" message="tns:processaCartaoResponse"/>
+</operation>
 </portType>
 <binding name="AcessoControlePortBinding" type="tns:AcessoControle">
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
 <operation name="login">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-</operation>
-<operation name="consultaCartao">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-</operation>
-<operation name="processaCartao">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -117,6 +99,24 @@
 </output>
 </operation>
 <operation name="extratoDia">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="consultaCartao">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="processaCartao">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
