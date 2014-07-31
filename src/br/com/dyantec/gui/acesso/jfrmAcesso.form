@@ -270,6 +270,9 @@
               <Font name="Dialog" size="14" style="0"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtValorRecebidoKeyPressed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel3">
           <Properties>
@@ -285,9 +288,15 @@
               <Font name="Dialog" size="14" style="0"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtDescontoKeyPressed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JToggleButton" name="jbtnConsultar">
           <Properties>
+            <Property name="mnemonic" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="KeyEvent.VK_F1" type="code"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Consultar - F1"/>
           </Properties>
           <Events>
@@ -296,6 +305,9 @@
         </Component>
         <Component class="javax.swing.JToggleButton" name="jbtnImprimir">
           <Properties>
+            <Property name="mnemonic" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="KeyEvent.VK_F8&#xa;" type="code"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Imprimir - F8"/>
           </Properties>
           <Events>
@@ -373,6 +385,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="jbtnConfirmar">
           <Properties>
+            <Property name="mnemonic" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="KeyEvent.VK_F5&#xa;" type="code"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Confirmar - F5"/>
           </Properties>
           <Events>

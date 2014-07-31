@@ -48,12 +48,6 @@ public class Util {
         return dateformatDDMMYYYYHHNNSS.format(data);
     }
     
-    public static double diferencaEmMinutos(Date dataInicial, Date dataFinal) {
-        long diferenca = dataFinal.getTime() - dataInicial.getTime();
-        double diferencaEmMinutos = (diferenca / 1000) / 60; //resultado é diferença entre as datas em minutos              
-        return diferencaEmMinutos;
-    }
-
     public static String xmlGregorianCalendarToStr(XMLGregorianCalendar data) {
         return Util.dateTimeToString(Util.toDate(data));
     }

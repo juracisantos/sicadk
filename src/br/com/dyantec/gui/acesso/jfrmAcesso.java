@@ -7,6 +7,7 @@ package br.com.dyantec.gui.acesso;
 
 import br.com.dyantec.gui.mensalista.JfrmPagamentoMensalista;
 import br.com.dyantec.gui.movimentoCaixa.JFrameMovimentoCaixa;
+import br.com.dyantec.proxy.TabelaProxy;
 import br.com.dyantec.util.Parametros;
 import br.com.dyantec.util.Util;
 import br.com.dynatec.controlador.ws.RetornaTabelasHelperVO;
@@ -42,9 +43,14 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
         startRelogio();
         this.setDataTransacaoFinanceira(new Date());
         
-        Util.addHotKey(this, jbtnConsultar, KeyEvent.VK_F1);
-        Util.addHotKey(this, jbtnConfirmar, KeyEvent.VK_F5);
-        Util.addHotKey(this, jbtnImprimir, KeyEvent.VK_F8);
+//        jbtnConsultar.setMnemonic(KeyEvent.VK_F1);
+//        jbtnConfirmar.setMnemonic(KeyEvent.VK_F5);
+//        jbtnConsultar.setMnemonic(KeyEvent.VK_F8);
+//        jbtnConsultar.setMnemonic(java.awt.event.KeyEvent.VK_F1);
+        
+//        Util.addHotKey(this, jbtnConsultar, KeyEvent.VK_F1);
+//        Util.addHotKey(this, jbtnConfirmar, KeyEvent.VK_F5);
+//        Util.addHotKey(this, jbtnImprimir, KeyEvent.VK_F8);
         
         txtCartao.requestFocus();
     }
@@ -120,12 +126,23 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
 
         txtValorRecebido.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,###,###.00"))));
         txtValorRecebido.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        txtValorRecebido.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtValorRecebidoKeyPressed(evt);
+            }
+        });
 
         jLabel3.setText("Desconto:");
 
         txtDesconto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,###,###.00"))));
         txtDesconto.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        txtDesconto.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtDescontoKeyPressed(evt);
+            }
+        });
 
+        jbtnConsultar.setMnemonic(KeyEvent.VK_F1);
         jbtnConsultar.setText("Consultar - F1");
         jbtnConsultar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -133,6 +150,8 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
             }
         });
 
+        jbtnImprimir.setMnemonic(KeyEvent.VK_F8
+        );
         jbtnImprimir.setText("Imprimir - F8");
         jbtnImprimir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -181,6 +200,8 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
 
         jLabel7.setText("Tempo disponivel:");
 
+        jbtnConfirmar.setMnemonic(KeyEvent.VK_F5
+        );
         jbtnConfirmar.setText("Confirmar - F5");
         jbtnConfirmar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -439,9 +460,22 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
 
     private void txtCartaoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCartaoKeyPressed
         if (evt.getKeyCode()==KeyEvent.VK_ENTER) {
-          consultarCartao();            
+          consultarCartao();
+          txtDesconto.requestFocus();
         }
     }//GEN-LAST:event_txtCartaoKeyPressed
+
+    private void txtDescontoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDescontoKeyPressed
+        if (evt.getKeyCode()==KeyEvent.VK_ENTER) {
+          txtValorRecebido.requestFocus();
+        }
+    }//GEN-LAST:event_txtDescontoKeyPressed
+
+    private void txtValorRecebidoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtValorRecebidoKeyPressed
+        if (evt.getKeyCode()==KeyEvent.VK_ENTER) {
+          txtPlacaVeiculo.requestFocus();
+        }
+    }//GEN-LAST:event_txtValorRecebidoKeyPressed
 
     /**
      * @param args the command line arguments
@@ -537,14 +571,11 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
     }
     
     public void atualizarValoresTela(RetornoConsultaCartaoVO acesso) {
-        jlblPermanencia.setText(acesso.getPermanencia());
-        
-        Date limiteParaSair = Util.toDate(acesso.getLimiteParaSair());
-        Double diferenca = Util.diferencaEmMinutos(new Date(), limiteParaSair);
+        jlblPermanencia.setText(acesso.getPermanencia());       
                         
-        jlblTempoDisponivel.setText(String.valueOf(diferenca));
+        jlblTempoDisponivel.setText(String.valueOf(acesso.getLimiteParaSairEmMinutos()));
         jlblTroco.setText("R$ " + String.valueOf(acesso.getTroco()));
-        jlblValorReceber.setText("R$ " + String.valueOf(acesso.getValorCobrado()));
+        jlblValorReceber.setText("R$ " + String.valueOf(acesso.getValorReceber()));
     }
 
     private static RetornaTabelasHelperVO recuperaTabelas_1() {

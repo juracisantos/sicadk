@@ -202,7 +202,7 @@ public class frmLogin extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private static RetornoLoginVO login(java.lang.String login, java.lang.String senha) {           
-        br.com.dynatec.controlador.ws.AcessoControle_Service service = new br.com.dynatec.controlador.ws.AcessoControle_Service();        
+        br.com.dynatec.controlador.ws.AcessoControle_Service service = new br.com.dynatec.controlador.ws.AcessoControle_Service(Parametros.WSDL_WEBSERVICE);        
         br.com.dynatec.controlador.ws.AcessoControle port = service.getAcessoControlePort();
         return port.login(login, senha);
     }
