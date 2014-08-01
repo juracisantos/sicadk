@@ -71,7 +71,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="btnDepositoCaixa1" min="-2" pref="173" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jButton1" min="-2" pref="164" max="-2" attributes="0"/>
+                  <Component id="jbtnSair" min="-2" pref="164" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
               <Group type="102" alignment="0" attributes="0">
@@ -199,7 +199,7 @@
                   </Group>
                   <EmptySpace pref="75" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="jButton1" max="32767" attributes="0"/>
+                      <Component id="jbtnSair" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="btnDepositoCaixa2" alignment="3" min="-2" pref="34" max="-2" attributes="0"/>
                           <Component id="btnDepositoCaixa" alignment="3" min="-2" pref="33" max="-2" attributes="0"/>
@@ -294,9 +294,6 @@
         </Component>
         <Component class="javax.swing.JToggleButton" name="jbtnConsultar">
           <Properties>
-            <Property name="mnemonic" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="KeyEvent.VK_F1" type="code"/>
-            </Property>
             <Property name="text" type="java.lang.String" value="Consultar - F1"/>
           </Properties>
           <Events>
@@ -305,9 +302,6 @@
         </Component>
         <Component class="javax.swing.JToggleButton" name="jbtnImprimir">
           <Properties>
-            <Property name="mnemonic" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="KeyEvent.VK_F8&#xa;" type="code"/>
-            </Property>
             <Property name="text" type="java.lang.String" value="Imprimir - F8"/>
           </Properties>
           <Events>
@@ -385,21 +379,18 @@
         </Component>
         <Component class="javax.swing.JButton" name="jbtnConfirmar">
           <Properties>
-            <Property name="mnemonic" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="KeyEvent.VK_F5&#xa;" type="code"/>
-            </Property>
             <Property name="text" type="java.lang.String" value="Confirmar - F5"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbtnConfirmarActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="jButton1">
+        <Component class="javax.swing.JButton" name="jbtnSair">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Sair"/>
+            <Property name="text" type="java.lang.String" value="Sair - ESC"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbtnSairActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel9">

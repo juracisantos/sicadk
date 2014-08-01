@@ -7,7 +7,6 @@ package br.com.dyantec.gui.acesso;
 
 import br.com.dyantec.gui.mensalista.JfrmPagamentoMensalista;
 import br.com.dyantec.gui.movimentoCaixa.JFrameMovimentoCaixa;
-import br.com.dyantec.proxy.TabelaProxy;
 import br.com.dyantec.util.Parametros;
 import br.com.dyantec.util.Util;
 import br.com.dynatec.controlador.ws.RetornaTabelasHelperVO;
@@ -22,7 +21,6 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.ws.WebServiceFeature;
 
 /**
  *
@@ -42,16 +40,11 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
         populaJCombobox();
         startRelogio();
         this.setDataTransacaoFinanceira(new Date());
-        
-//        jbtnConsultar.setMnemonic(KeyEvent.VK_F1);
-//        jbtnConfirmar.setMnemonic(KeyEvent.VK_F5);
-//        jbtnConsultar.setMnemonic(KeyEvent.VK_F8);
+
 //        jbtnConsultar.setMnemonic(java.awt.event.KeyEvent.VK_F1);
-        
 //        Util.addHotKey(this, jbtnConsultar, KeyEvent.VK_F1);
 //        Util.addHotKey(this, jbtnConfirmar, KeyEvent.VK_F5);
 //        Util.addHotKey(this, jbtnImprimir, KeyEvent.VK_F8);
-        
         txtCartao.requestFocus();
     }
 
@@ -87,7 +80,7 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jbtnConfirmar = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        jbtnSair = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
         jlblValorReceber = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
@@ -142,7 +135,6 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
             }
         });
 
-        jbtnConsultar.setMnemonic(KeyEvent.VK_F1);
         jbtnConsultar.setText("Consultar - F1");
         jbtnConsultar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -150,8 +142,6 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
             }
         });
 
-        jbtnImprimir.setMnemonic(KeyEvent.VK_F8
-        );
         jbtnImprimir.setText("Imprimir - F8");
         jbtnImprimir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -200,8 +190,6 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
 
         jLabel7.setText("Tempo disponivel:");
 
-        jbtnConfirmar.setMnemonic(KeyEvent.VK_F5
-        );
         jbtnConfirmar.setText("Confirmar - F5");
         jbtnConfirmar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -209,10 +197,10 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
             }
         });
 
-        jButton1.setText("Sair");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jbtnSair.setText("Sair - ESC");
+        jbtnSair.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jbtnSairActionPerformed(evt);
             }
         });
 
@@ -244,7 +232,7 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnDepositoCaixa1, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jbtnSair, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -345,7 +333,7 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 459, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jbtnSair, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnDepositoCaixa2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btnDepositoCaixa, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -440,9 +428,9 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
         frmMovimentoCaixa.setVisible(true);
     }//GEN-LAST:event_btnDepositoCaixaActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jbtnSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnSairActionPerformed
         System.exit(0);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_jbtnSairActionPerformed
 
     private void btnDepositoCaixa1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDepositoCaixa1ActionPerformed
         // TODO add your handling code here:
@@ -459,21 +447,21 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
     }//GEN-LAST:event_txtCartaoActionPerformed
 
     private void txtCartaoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCartaoKeyPressed
-        if (evt.getKeyCode()==KeyEvent.VK_ENTER) {
-          consultarCartao();
-          txtDesconto.requestFocus();
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            consultarCartao();
+            txtDesconto.requestFocus();
         }
     }//GEN-LAST:event_txtCartaoKeyPressed
 
     private void txtDescontoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDescontoKeyPressed
-        if (evt.getKeyCode()==KeyEvent.VK_ENTER) {
-          txtValorRecebido.requestFocus();
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            txtValorRecebido.requestFocus();
         }
     }//GEN-LAST:event_txtDescontoKeyPressed
 
     private void txtValorRecebidoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtValorRecebidoKeyPressed
-        if (evt.getKeyCode()==KeyEvent.VK_ENTER) {
-          txtPlacaVeiculo.requestFocus();
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            txtPlacaVeiculo.requestFocus();
         }
     }//GEN-LAST:event_txtValorRecebidoKeyPressed
 
@@ -518,7 +506,6 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
     private javax.swing.JButton btnDepositoCaixa2;
     private javax.swing.JButton btnDepositoCaixa3;
     private javax.swing.JTextPane cupom;
-    private javax.swing.JButton jButton1;
     private javax.swing.JComboBox jComboBoxTabelas;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -536,6 +523,7 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
     private javax.swing.JButton jbtnConfirmar;
     private javax.swing.JToggleButton jbtnConsultar;
     private javax.swing.JToggleButton jbtnImprimir;
+    private javax.swing.JButton jbtnSair;
     private javax.swing.JLabel jlblPermanencia;
     private javax.swing.JLabel jlblTempoDisponivel;
     private javax.swing.JLabel jlblTroco;
@@ -554,7 +542,7 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
             jComboBoxTabelas.addItem(tabela);
         }
     }
-    
+
     public void consultarCartao() {
         String cartao = txtCartao.getText();
         Tabela tabela = (Tabela) jComboBoxTabelas.getSelectedItem();
@@ -569,10 +557,10 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
         cupom.setText(Util.cupom(consulta).toString());
         atualizarValoresTela(consulta);
     }
-    
+
     public void atualizarValoresTela(RetornoConsultaCartaoVO acesso) {
-        jlblPermanencia.setText(acesso.getPermanencia());       
-                        
+        jlblPermanencia.setText(acesso.getPermanencia());
+
         jlblTempoDisponivel.setText(String.valueOf(acesso.getLimiteParaSairEmMinutos()));
         jlblTroco.setText("R$ " + String.valueOf(acesso.getTroco()));
         jlblValorReceber.setText("R$ " + String.valueOf(acesso.getValorReceber()));
@@ -593,8 +581,6 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
         Relogio time = (Relogio) o;
         this.lblRelogio.setText(time.getHoras());
     }
-
-    
 
     public Integer getUsuarioId() {
         return usuarioId;
@@ -622,7 +608,7 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
 
     private static RetornoConsultaCartaoVO processaCartao(java.lang.String cartao, java.lang.String dataTransasaoFinanceira, java.lang.Integer codTabela, java.lang.Double desconto, java.lang.Double valorRecebido, java.lang.Integer usuarioId, java.lang.String placaCarro) {
         br.com.dynatec.controlador.ws.AcessoControle_Service service = new br.com.dynatec.controlador.ws.AcessoControle_Service(Parametros.WSDL_WEBSERVICE);
-        
+
         br.com.dynatec.controlador.ws.AcessoControle port = service.getAcessoControlePort();
         return port.processaCartao(cartao, dataTransasaoFinanceira, codTabela, desconto, valorRecebido, usuarioId, placaCarro);
     }
