@@ -5,11 +5,12 @@
  */
 package br.com.dyantec.gui.mensalista;
 
+import br.com.dyantec.type.TipoImpressao;
+import br.com.dyantec.util.Impressora;
+import br.com.dyantec.util.Parametros;
 import br.com.dyantec.util.Util;
 import br.com.dynatec.controlador.ws.RetornoConsultaCartaoVO;
-import br.com.dynatec.controlador.ws.RetornoHelper;
 import java.awt.print.PrinterException;
-import java.text.MessageFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,12 +24,14 @@ public class JfrmPagamentoMensalista extends javax.swing.JFrame {
 
     private Date dataTransacaoFinanceira;
     private Integer idUsuario;
+    private RetornoConsultaCartaoVO consulta;
 
     /**
      * Creates new form JfrmPagamentoMensalista
      */
     public JfrmPagamentoMensalista() {
         initComponents();
+        txtCartao.requestFocus();
     }
 
     /**
@@ -61,6 +64,7 @@ public class JfrmPagamentoMensalista extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         jlblCPF = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        jLabel11 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -184,8 +188,8 @@ public class JfrmPagamentoMensalista extends javax.swing.JFrame {
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -222,34 +226,40 @@ public class JfrmPagamentoMensalista extends javax.swing.JFrame {
                             .addComponent(jLabel9)
                             .addComponent(jlblCPF)))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(59, 59, 59))
+                .addContainerGap())
         );
 
+        jLabel11.setIcon(new javax.swing.ImageIcon("/home/jura/projetos/estacionamento/image001.png")); // NOI18N
+
         jLabel8.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
-        jLabel8.setText("Mensalista");
+        jLabel8.setText("Pagamento Mensalista");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(62, 62, 62)
-                        .addComponent(jLabel8))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jLabel11)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel8)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addComponent(jLabel8)
-                .addGap(18, 18, 18)
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel11)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(jLabel8)))
+                .addGap(31, 31, 31)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(60, Short.MAX_VALUE))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
 
         pack();
@@ -263,33 +273,28 @@ public class JfrmPagamentoMensalista extends javax.swing.JFrame {
         Double desconto = "".equals(txtDesconto.getText()) ? 0.0 : Double.valueOf(txtDesconto.getText().replace(".", "").replace(",", "."));
         Double valorRecebido = "".equals(txtValorRecebido.getText()) ? 0.0 : Double.valueOf(txtValorRecebido.getText().replace(".", "").replace(",", "."));
 
-        RetornoConsultaCartaoVO consulta = processaCartao(cartao, dataTransacao, null, desconto, valorRecebido, this.getIdUsuario(), null);
+        consulta = processaCartao(cartao, dataTransacao, null, desconto, valorRecebido, this.getIdUsuario(), null);
 
         JOptionPane.showMessageDialog(null, consulta.getMensagem());
 
         jbtnImprimir.setEnabled("ok".equals(consulta.getStatus()));
         jbtnConfirmar.setEnabled(!"ok".equals(consulta.getStatus()));
 
-        cupom.setText(Util.cupom(consulta).toString());
+        cupom.setText(Util.cupom(consulta, TipoImpressao.HTML).toString());
 
         txtCartao.setText("");
-        txtDesconto.setText("");
-        txtValorRecebido.setText("");
+
     }//GEN-LAST:event_jbtnConfirmarActionPerformed
 
     private void jbtnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnImprimirActionPerformed
-        try {
-//            cupom.print(new MessageFormat("Header"), new MessageFormat("Footer"), true, null, null, true);
-            cupom.print();
-            cupom.setText("");
-        } catch (PrinterException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-        }
+        Impressora.imprimir(Util.cupom(consulta, TipoImpressao.BEMATHEC_TEXT).toString());
     }//GEN-LAST:event_jbtnImprimirActionPerformed
 
     private void jToggleButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton2ActionPerformed
         //java.lang.String cartao, java.lang.String dataTransasaoFinanceira, java.lang.Integer codTabela
         String cartao = txtCartao.getText();
+        txtDesconto.setText("");
+        txtValorRecebido.setText("");
 
         if ("".equals(cartao)) {
             JOptionPane.showMessageDialog(null, "Deve ser informado um número de cartão.");
@@ -300,14 +305,14 @@ public class JfrmPagamentoMensalista extends javax.swing.JFrame {
             Double desconto = "".equals(txtDesconto.getText()) ? 0.0 : Double.valueOf(txtDesconto.getText().replace(".", "").replace(",", "."));
             Double valorRecebido = "".equals(txtValorRecebido.getText()) ? 0.0 : Double.valueOf(txtValorRecebido.getText().replace(".", "").replace(",", "."));
 
-            RetornoConsultaCartaoVO consulta = consultaCartao(cartao, dataTransacao, null, desconto, valorRecebido, this.getIdUsuario(), null);
+            consulta = consultaCartao(cartao, dataTransacao, null, desconto, valorRecebido, this.getIdUsuario(), null);
 
             jlblCPF.setText(consulta.getCpf());
             jlblNomeMensalista.setText(consulta.getNomeMensalista());
             jlblValorMensalidade.setText("R$ " + consulta.getValorReceber());
             jlblTroco.setText("R$ " + consulta.getTroco());
 
-            cupom.setText(Util.cupom(consulta).toString());
+            cupom.setText(Util.cupom(consulta, TipoImpressao.HTML).toString());
 
             jbtnConfirmar.setEnabled("ok".equals(consulta.getStatus()));
 //        jbtnConfirmar.setEnabled(true);
@@ -362,6 +367,7 @@ public class JfrmPagamentoMensalista extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextPane cupom;
     private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -384,8 +390,6 @@ public class JfrmPagamentoMensalista extends javax.swing.JFrame {
     private javax.swing.JFormattedTextField txtValorRecebido;
     // End of variables declaration//GEN-END:variables
 
-    
-
     public Date getDataTransacaoFinanceira() {
         return dataTransacaoFinanceira;
     }
@@ -407,15 +411,23 @@ public class JfrmPagamentoMensalista extends javax.swing.JFrame {
     }
 
     private static RetornoConsultaCartaoVO consultaCartao(java.lang.String cartao, java.lang.String dataTransasaoFinanceira, java.lang.Integer codTabela, java.lang.Double desconto, java.lang.Double valorRecebido, java.lang.Integer usuarioId, java.lang.String placaCarro) {
-        br.com.dynatec.controlador.ws.AcessoControle_Service service = new br.com.dynatec.controlador.ws.AcessoControle_Service();
+        br.com.dynatec.controlador.ws.AcessoControle_Service service = new br.com.dynatec.controlador.ws.AcessoControle_Service(Parametros.WSDL_WEBSERVICE);
         br.com.dynatec.controlador.ws.AcessoControle port = service.getAcessoControlePort();
         return port.consultaCartao(cartao, dataTransasaoFinanceira, codTabela, desconto, valorRecebido, usuarioId, placaCarro);
     }
 
     private static RetornoConsultaCartaoVO processaCartao(java.lang.String cartao, java.lang.String dataTransasaoFinanceira, java.lang.Integer codTabela, java.lang.Double desconto, java.lang.Double valorRecebido, java.lang.Integer usuarioId, java.lang.String placaCarro) {
-        br.com.dynatec.controlador.ws.AcessoControle_Service service = new br.com.dynatec.controlador.ws.AcessoControle_Service();
+        br.com.dynatec.controlador.ws.AcessoControle_Service service = new br.com.dynatec.controlador.ws.AcessoControle_Service(Parametros.WSDL_WEBSERVICE);
         br.com.dynatec.controlador.ws.AcessoControle port = service.getAcessoControlePort();
         return port.processaCartao(cartao, dataTransasaoFinanceira, codTabela, desconto, valorRecebido, usuarioId, placaCarro);
+    }
+
+    public RetornoConsultaCartaoVO getConsulta() {
+        return consulta;
+    }
+
+    public void setConsulta(RetornoConsultaCartaoVO consulta) {
+        this.consulta = consulta;
     }
 
 }

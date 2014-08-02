@@ -7,12 +7,18 @@ package br.com.dyantec.gui.acesso;
 
 import br.com.dyantec.gui.mensalista.JfrmPagamentoMensalista;
 import br.com.dyantec.gui.movimentoCaixa.JFrameMovimentoCaixa;
+import br.com.dyantec.proxy.TabelaProxy;
+import br.com.dyantec.type.TipoImpressao;
+import br.com.dyantec.util.Impressora;
 import br.com.dyantec.util.Parametros;
 import br.com.dyantec.util.Util;
 import br.com.dynatec.controlador.ws.RetornaTabelasHelperVO;
 import br.com.dynatec.controlador.ws.RetornoConsultaCartaoVO;
 import br.com.dynatec.controlador.ws.Tabela;
 import br.com.dynatec.controlador.ws.TipoMovimento;
+import java.awt.Event;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
 import java.text.MessageFormat;
@@ -21,6 +27,12 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 
 /**
  *
@@ -31,16 +43,30 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
     private Integer usuarioId;
     private String usuarioNome;
     private Date dataTransacaoFinanceira;
+    private AcaoConsultar acaoConsultar = new AcaoConsultar();
+    private AcaoConfirmar acaoConfirmar = new AcaoConfirmar();
+    private AcaoImprimir acaoImprimir = new AcaoImprimir();
+
+    private AcaoDepositoCaixa acaoDepositoCaixa = new AcaoDepositoCaixa();
+    private AcaoRetiradaCaixa acaoRetiradaCaixa = new AcaoRetiradaCaixa();
+    private AcaoPagamentoMensalista acaoPagamentoMensalida = new AcaoPagamentoMensalista();
+    private AcaoSairSistema acaoSairDoSistema = new AcaoSairSistema();
+
+    private RetornoConsultaCartaoVO consulta;
 
     /**
      * Creates new form jfrmAcesso
      */
     public jfrmAcesso() {
         initComponents();
+
+//        Util.registrarAcoesDoTeclado(this.jPanel2, this.consultarCartaroAction);
+//        Util.addHotKey(this, jbtnConfirmar, KeyEvent.VK_F5);
+//        Util.addHotKey(this, jbtnImprimir, KeyEvent.VK_F8);        
         populaJCombobox();
         startRelogio();
         this.setDataTransacaoFinanceira(new Date());
-
+        registrarAcoesDoTeclado(jPanel2);
 //        jbtnConsultar.setMnemonic(java.awt.event.KeyEvent.VK_F1);
 //        Util.addHotKey(this, jbtnConsultar, KeyEvent.VK_F1);
 //        Util.addHotKey(this, jbtnConfirmar, KeyEvent.VK_F5);
@@ -87,6 +113,8 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
         jlblTroco = new javax.swing.JLabel();
         jlblPermanencia = new javax.swing.JLabel();
         jlblTempoDisponivel = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jlblOperador = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
 
@@ -142,23 +170,22 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
             }
         });
 
-        jbtnImprimir.setText("Imprimir - F8");
+        jbtnImprimir.setText("Imprimir - F3");
         jbtnImprimir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jbtnImprimirActionPerformed(evt);
             }
         });
 
-        lblRelogio.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        lblRelogio.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         lblRelogio.setText("25/12/1919 00:00:00");
         lblRelogio.setToolTipText("");
         lblRelogio.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
 
         cupom.setContentType("text/html"); // NOI18N
-        cupom.setText("");
         jScrollPane1.setViewportView(cupom);
 
-        btnDepositoCaixa.setText("Deposito de Caixa");
+        btnDepositoCaixa.setText("Deposito de Caixa - F4");
         btnDepositoCaixa.setToolTipText("");
         btnDepositoCaixa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -166,11 +193,11 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
             }
         });
 
-        btnDepositoCaixa3.setText("Perda de Cartão");
+        btnDepositoCaixa3.setText("Perda de Cartão - F6");
         btnDepositoCaixa3.setToolTipText("");
         btnDepositoCaixa3.setEnabled(false);
 
-        btnDepositoCaixa2.setText("Retirada de Caixa");
+        btnDepositoCaixa2.setText("Retirada de Caixa - F5");
         btnDepositoCaixa2.setToolTipText("");
         btnDepositoCaixa2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -178,7 +205,7 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
             }
         });
 
-        btnDepositoCaixa1.setText("Mensalista");
+        btnDepositoCaixa1.setText("Mensalista - F7");
         btnDepositoCaixa1.setToolTipText("");
         btnDepositoCaixa1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -186,18 +213,21 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
             }
         });
 
+        jLabel6.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel6.setText("Permanência:");
 
+        jLabel7.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel7.setText("Tempo disponivel:");
 
-        jbtnConfirmar.setText("Confirmar - F5");
+        jbtnConfirmar.setText("Confirmar - F2");
         jbtnConfirmar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jbtnConfirmarActionPerformed(evt);
             }
         });
 
-        jbtnSair.setText("Sair - ESC");
+        jbtnSair.setText("Sair - Ctrl+Q");
+        jbtnSair.setActionCommand("Sair - Ctrl+ESC");
         jbtnSair.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jbtnSairActionPerformed(evt);
@@ -214,40 +244,26 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
         jlblTroco.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jlblTroco.setText("R$ 0.00");
 
+        jlblPermanencia.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jlblPermanencia.setText("00:00");
 
+        jlblTempoDisponivel.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jlblTempoDisponivel.setText("00:00");
+
+        jLabel12.setText("Operador:");
+
+        jlblOperador.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jlblOperador.setText("jLabel13");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnDepositoCaixa2, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnDepositoCaixa, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnDepositoCaixa3, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnDepositoCaixa1, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jbtnSair, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(96, 96, 96)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel7))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jlblTempoDisponivel)
-                            .addComponent(jlblPermanencia)))
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addGap(71, 71, 71)
+                            .addGap(262, 262, 262)
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -264,23 +280,46 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
                                 .addComponent(jlblValorReceber)
                                 .addComponent(txtCartao, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                            .addContainerGap()
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                    .addComponent(jbtnConsultar, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(jbtnConfirmar)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(jbtnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(lblRelogio, javax.swing.GroupLayout.Alignment.TRAILING))))
+                            .addComponent(jbtnConsultar, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jbtnConfirmar)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jbtnImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(lblRelogio, javax.swing.GroupLayout.Alignment.TRAILING))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jComboBoxTabelas, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jComboBoxTabelas, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(287, 287, 287)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel7))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jlblTempoDisponivel)
+                            .addComponent(jlblPermanencia))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(69, 69, 69))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(btnDepositoCaixa)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnDepositoCaixa2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnDepositoCaixa3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnDepositoCaixa1, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jbtnSair, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel12)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jlblOperador)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -331,14 +370,17 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
                             .addComponent(jlblTempoDisponivel)
                             .addComponent(jLabel7)))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 459, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jbtnSair, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnDepositoCaixa2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnDepositoCaixa, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnDepositoCaixa3, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnDepositoCaixa1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel12)
+                    .addComponent(jlblOperador))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnDepositoCaixa2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnDepositoCaixa, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnDepositoCaixa3, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnDepositoCaixa1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jbtnSair, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -381,18 +423,22 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jbtnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnImprimirActionPerformed
-        try {
-            cupom.print(new MessageFormat("Header"), new MessageFormat("Footer"), true, null, null, true);
-        } catch (PrinterException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-        }
+        imprimir();
     }//GEN-LAST:event_jbtnImprimirActionPerformed
+
+    private void imprimir() {
+        Impressora.imprimir(Util.cupom(consulta, TipoImpressao.BEMATHEC_TEXT).toString());
+    }
 
     private void jbtnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnConsultarActionPerformed
         consultarCartao();
     }//GEN-LAST:event_jbtnConsultarActionPerformed
 
     private void jbtnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnConfirmarActionPerformed
+        confirmar();
+    }//GEN-LAST:event_jbtnConfirmarActionPerformed
+
+    private void confirmar() throws NumberFormatException {
         //java.lang.String cartao, java.lang.String dataTransasaoFinanceira, java.lang.Integer codTabela
         String cartao = txtCartao.getText();
         Tabela tabela = (Tabela) jComboBoxTabelas.getSelectedItem();
@@ -402,13 +448,19 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
         Double valorRecebido = "".equals(txtValorRecebido.getText()) ? 0.0 : Double.valueOf(txtValorRecebido.getText().replace(".", "").replace(",", "."));
         String placaCarro = txtPlacaVeiculo.getText();
 
-        RetornoConsultaCartaoVO consulta = processaCartao(cartao, dataTransacao, tabela.getId(), desconto, valorRecebido, this.getUsuarioId(), placaCarro);
+        consulta = processaCartao(cartao, dataTransacao, tabela.getId(), desconto, valorRecebido, this.getUsuarioId(), placaCarro);
 
-        cupom.setText(Util.cupom(consulta).toString());
+        cupom.setText(Util.cupom(consulta, TipoImpressao.HTML).toString());
         atualizarValoresTela(consulta);
-    }//GEN-LAST:event_jbtnConfirmarActionPerformed
+        txtCartao.setText("");
+        txtCartao.requestFocus();
+    }
 
     private void btnDepositoCaixa2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDepositoCaixa2ActionPerformed
+        retiradaCaixa();
+    }//GEN-LAST:event_btnDepositoCaixa2ActionPerformed
+
+    private void retiradaCaixa() {
         JFrameMovimentoCaixa frmMovimentoCaixa = new JFrameMovimentoCaixa();
         frmMovimentoCaixa.setLocationRelativeTo(null);
         frmMovimentoCaixa.setIdUsuario(this.getUsuarioId());
@@ -416,9 +468,13 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
         frmMovimentoCaixa.setDataTransacaoFinanceira(this.getDataTransacaoFinanceira());
         frmMovimentoCaixa.atualizaVisualizacao();
         frmMovimentoCaixa.setVisible(true);
-    }//GEN-LAST:event_btnDepositoCaixa2ActionPerformed
+    }
 
     private void btnDepositoCaixaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDepositoCaixaActionPerformed
+        depositoCaixa();
+    }//GEN-LAST:event_btnDepositoCaixaActionPerformed
+
+    private void depositoCaixa() {
         JFrameMovimentoCaixa frmMovimentoCaixa = new JFrameMovimentoCaixa();
         frmMovimentoCaixa.setLocationRelativeTo(null);
         frmMovimentoCaixa.setIdUsuario(this.getUsuarioId());
@@ -426,13 +482,21 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
         frmMovimentoCaixa.setDataTransacaoFinanceira(this.getDataTransacaoFinanceira());
         frmMovimentoCaixa.atualizaVisualizacao();
         frmMovimentoCaixa.setVisible(true);
-    }//GEN-LAST:event_btnDepositoCaixaActionPerformed
+    }
 
     private void jbtnSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnSairActionPerformed
-        System.exit(0);
+        sairDoSistema();
     }//GEN-LAST:event_jbtnSairActionPerformed
 
+    private void sairDoSistema() {
+        System.exit(0);
+    }
+
     private void btnDepositoCaixa1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDepositoCaixa1ActionPerformed
+        pagamentoMensalista();
+    }//GEN-LAST:event_btnDepositoCaixa1ActionPerformed
+
+    private void pagamentoMensalista() {
         // TODO add your handling code here:
         JfrmPagamentoMensalista frmMensalista = new JfrmPagamentoMensalista();
         frmMensalista.setLocationRelativeTo(null);
@@ -440,11 +504,15 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
         frmMensalista.setDataTransacaoFinanceira(this.getDataTransacaoFinanceira());
         frmMensalista.atualizaVisualizacao();
         frmMensalista.setVisible(true);
-    }//GEN-LAST:event_btnDepositoCaixa1ActionPerformed
+    }
 
     private void txtCartaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCartaoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtCartaoActionPerformed
+
+    public void atualizaVisualizacao() {
+        jlblOperador.setText(this.getUsuarioNome());
+    }
 
     private void txtCartaoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCartaoKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -510,6 +578,7 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -524,6 +593,7 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
     private javax.swing.JToggleButton jbtnConsultar;
     private javax.swing.JToggleButton jbtnImprimir;
     private javax.swing.JButton jbtnSair;
+    private javax.swing.JLabel jlblOperador;
     private javax.swing.JLabel jlblPermanencia;
     private javax.swing.JLabel jlblTempoDisponivel;
     private javax.swing.JLabel jlblTroco;
@@ -543,19 +613,31 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
         }
     }
 
+    public String getNome(Tabela t) {
+        return t.getNome();
+    }
+
     public void consultarCartao() {
         String cartao = txtCartao.getText();
         Tabela tabela = (Tabela) jComboBoxTabelas.getSelectedItem();
-        String dataTransacao = Util.dateToString(new Date());
 
-        Double desconto = "".equals(txtDesconto.getText()) ? 0.0 : Double.valueOf(txtDesconto.getText().replace(".", "").replace(",", "."));
-        Double valorRecebido = "".equals(txtValorRecebido.getText()) ? 0.0 : Double.valueOf(txtValorRecebido.getText().replace(".", "").replace(",", "."));
-        String placaCarro = txtPlacaVeiculo.getText();
+        if ("".equals(cartao)) {
+            JOptionPane.showMessageDialog(null, "Deve ser informado um número de cartão.");
+        } else {
+            String dataTransacao = Util.dateToString(new Date());
 
-        RetornoConsultaCartaoVO consulta = consultaCartao(cartao, dataTransacao, tabela.getId(), desconto, valorRecebido, this.getUsuarioId(), placaCarro);
+            Double desconto = "".equals(txtDesconto.getText()) ? 0.0 : Double.valueOf(txtDesconto.getText().replace(".", "").replace(",", "."));
+            Double valorRecebido = "".equals(txtValorRecebido.getText()) ? 0.0 : Double.valueOf(txtValorRecebido.getText().replace(".", "").replace(",", "."));
+            String placaCarro = txtPlacaVeiculo.getText();
 
-        cupom.setText(Util.cupom(consulta).toString());
-        atualizarValoresTela(consulta);
+            consulta = consultaCartao(cartao, dataTransacao, tabela.getId(), desconto, valorRecebido, this.getUsuarioId(), placaCarro);
+
+            cupom.setText(Util.cupom(consulta, TipoImpressao.HTML).toString());
+            limparValoresTela();
+            atualizarValoresTela(consulta);
+
+            txtDesconto.requestFocus();
+        }
     }
 
     public void atualizarValoresTela(RetornoConsultaCartaoVO acesso) {
@@ -564,6 +646,14 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
         jlblTempoDisponivel.setText(String.valueOf(acesso.getLimiteParaSairEmMinutos()));
         jlblTroco.setText("R$ " + String.valueOf(acesso.getTroco()));
         jlblValorReceber.setText("R$ " + String.valueOf(acesso.getValorReceber()));
+    }
+
+    public void limparValoresTela() {
+        jlblTroco.setText("R$ 0,00");
+        jlblValorReceber.setText("R$ 0,00");
+        txtDesconto.setText("");
+        txtValorRecebido.setText("");
+        txtPlacaVeiculo.setText("");
     }
 
     private static RetornaTabelasHelperVO recuperaTabelas_1() {
@@ -617,6 +707,97 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
         br.com.dynatec.controlador.ws.AcessoControle_Service service = new br.com.dynatec.controlador.ws.AcessoControle_Service(Parametros.WSDL_WEBSERVICE);
         br.com.dynatec.controlador.ws.AcessoControle port = service.getAcessoControlePort();
         return port.consultaCartao(cartao, dataTransasaoFinanceira, codTabela, desconto, valorRecebido, usuarioId, placaCarro);
+    }
+
+    private class AcaoConsultar extends AbstractAction {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            consultarCartao();
+        }
+    }
+
+    private class AcaoConfirmar extends AbstractAction {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            confirmar();
+        }
+    }
+
+    private class AcaoImprimir extends AbstractAction {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            imprimir();
+        }
+    }
+
+    private class AcaoDepositoCaixa extends AbstractAction {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            depositoCaixa();
+        }
+    }
+
+    private class AcaoRetiradaCaixa extends AbstractAction {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            retiradaCaixa();
+        }
+    }
+
+    private class AcaoPagamentoMensalista extends AbstractAction {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            pagamentoMensalista();
+        }
+    }
+
+    private class AcaoSairSistema extends AbstractAction {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            sairDoSistema();
+        }
+    }
+
+    private void registrarAcoesDoTeclado(JPanel painel) {
+        ActionMap actionMap = painel.getActionMap();
+        actionMap.put("consultarCartao", acaoConsultar);
+        actionMap.put("confirmarAcesso", acaoConfirmar);
+        actionMap.put("imprimirCupom", acaoImprimir);
+
+        actionMap.put("depositoCaixa", acaoDepositoCaixa);
+        actionMap.put("retiradaCaixa", acaoRetiradaCaixa);
+        actionMap.put("pagamentoMensalisata", acaoPagamentoMensalida);
+        actionMap.put("sairDoSistema", acaoSairDoSistema);
+
+        painel.setActionMap(actionMap);
+
+        InputMap imap = painel.getInputMap(JPanel.WHEN_IN_FOCUSED_WINDOW);
+
+        imap.put(KeyStroke.getKeyStroke("F1"), "consultarCartao");
+        imap.put(KeyStroke.getKeyStroke("F2"), "confirmarAcesso");
+        imap.put(KeyStroke.getKeyStroke("F3"), "imprimirCupom");
+
+        imap.put(KeyStroke.getKeyStroke("F4"), "depositoCaixa");
+        imap.put(KeyStroke.getKeyStroke("F5"), "retiradaCaixa");
+        imap.put(KeyStroke.getKeyStroke("F7"), "pagamentoMensalisata");
+
+        KeyStroke ctrlESC = KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_MASK);
+        imap.put(ctrlESC, "sairDoSistema");
+    }
+
+    public RetornoConsultaCartaoVO getConsulta() {
+        return consulta;
+    }
+
+    public void setConsulta(RetornoConsultaCartaoVO consulta) {
+        this.consulta = consulta;
     }
 
 }

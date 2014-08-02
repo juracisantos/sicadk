@@ -5,19 +5,23 @@
  */
 package br.com.dyantec.util;
 
+import br.com.dyantec.type.TipoImpressao;
 import br.com.dynatec.controlador.ws.RetornoConsultaCartaoVO;
 import br.com.dynatec.controlador.ws.TipoMovimento;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JTextField;
+import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -47,7 +51,7 @@ public class Util {
         SimpleDateFormat dateformatDDMMYYYYHHNNSS = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         return dateformatDDMMYYYYHHNNSS.format(data);
     }
-    
+
     public static String xmlGregorianCalendarToStr(XMLGregorianCalendar data) {
         return Util.dateTimeToString(Util.toDate(data));
     }
@@ -79,44 +83,109 @@ public class Util {
         return tipoMovimento.equals("DEPOSITO") ? TipoMovimento.DEPOSITO : TipoMovimento.RETIRADA;
     }
 
-    public static StringBuilder cupom(RetornoConsultaCartaoVO obj) {
+    public static StringBuilder cupomMovimentoCaixa(TipoMovimento tm, Double valor, Date data, String observacao, Integer operadorID, String operadorNome) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("MOVIMENTO DE CAIXA").append("\n");
+        sb.append("\n");
+        sb.append("Tipo..........:").append(tm.value()).append("\n");
+        sb.append("Valor.........:").append(String.valueOf(valor)).append("\n");
+        sb.append("Data..........:").append(Util.dateToString(data)).append("\n");
+        sb.append("Obs...........:").append(observacao).append("\n");
+        sb.append("Operador ID...:").append(operadorID).append("\n");
+        sb.append("Operador Nome.:").append(operadorNome);
+        
+        return sb;
+    }
+    
+    public static StringBuilder cupom(RetornoConsultaCartaoVO obj, TipoImpressao tp) {
         StringBuilder retorno = new StringBuilder();
+        Util.setHeader(retorno, tp, null);
 
-        retorno.append("<html>");
-        retorno.append("<head>");
-        retorno.append("</head>");
-        retorno.append("<body>");
-        retorno.append("<p style='margin-top: 0'>");
+        if (tp.equals(TipoImpressao.BEMATHEC_TEXT)) {
+            if (obj.isMensalista()) {
+                retorno.append("PAGAMENTO MENSALIDADE").append("\n");
+                retorno.append("CPF................:").append(obj.getCpf()).append("\n");
+                retorno.append("Mensalista.........:").append(obj.getNomeMensalista()).append("\n");
+                retorno.append("Mensalidade........:").append(obj.getValorReceber()).append("\n");
+                retorno.append("Desconto...........:").append(obj.getDescontoAtual()).append("\n");
+                retorno.append("Valor Recebido.....:").append(obj.getValorRecebido()).append("\n");
+                retorno.append("Troco..............:").append(obj.getTroco()).append("\n");
+                retorno.append("Data Pagamento.....:").append(Util.dateToString(new Date())).append("\n");
+                retorno.append("Proxímo vencimento.:").append(Util.xmlGregorianCalendarToStr(obj.getProximoVencimento())).append("\n");
+            } else {
+                retorno.append("Entrada............:").append(Util.xmlGregorianCalendarToStr(obj.getEntrada())).append("\n");
+                retorno.append("Saida..............:").append(Util.xmlGregorianCalendarToStr(obj.getSaida())).append("\n");
+                retorno.append("Permanência........:").append(obj.getPermanencia()).append("\n");
+                retorno.append("Limite para sair...:").append(Util.xmlGregorianCalendarToStr(obj.getLimiteParaSair())).append("\n");
 
-        if (obj.isMensalista()) {
-            retorno.append("PAGAMENTO MENSALIDADE").append("<br/><br/>");
-            retorno.append("CPF: ").append(obj.getCpf()).append("<br/>");
-            retorno.append("Mensalista: ").append(obj.getNomeMensalista()).append("<br/>");
-            retorno.append("Mensalidade: ").append(obj.getValorReceber()).append("<br/>");
-            retorno.append("Desconto: ").append(obj.getDescontoAtual()).append("<br/>");
-            retorno.append("Valor Recebido: ").append(obj.getValorRecebido()).append("<br/>");
-            retorno.append("Troco: ").append(obj.getTroco()).append("<br/>");
-            retorno.append("Data Pagamento: ").append(Util.dateToString(new Date())).append("<br/>");
-            retorno.append("Proxímo vencimento: ").append(Util.xmlGregorianCalendarToStr(obj.getProximoVencimento())).append("<br/>");
+                retorno.append("Valor cobrado......:").append(obj.getValorCobrado()).append("\n");
+                retorno.append("Valor já pago......:").append(obj.getUltimoValorPago()).append("\n");
+                retorno.append("Desconto...........:").append(obj.getDesconboAcumulado()).append("\n");
+                retorno.append("Valor a receber....:").append(obj.getValorReceber()).append("\n");
+                retorno.append("Valor recebido.....:").append(obj.getValorRecebido()).append("\n");
+                retorno.append("Troco..............:").append(obj.getTroco()).append("\n");
+                retorno.append("Placa do veiculo...:").append(obj.getPlacaVeiculo()).append("\n");
+            }
         } else {
-            retorno.append("Entrada: ").append(Util.xmlGregorianCalendarToStr(obj.getEntrada())).append("<br/>");
-            retorno.append("Saida: ").append(Util.xmlGregorianCalendarToStr(obj.getSaida())).append("<br/>");
-            retorno.append("Permanência: ").append(obj.getPermanencia()).append("<br/>");
-            retorno.append("Limite para sair: ").append(Util.xmlGregorianCalendarToStr(obj.getLimiteParaSair())).append("<br/>");
+            if (obj.isMensalista()) {
+                retorno.append("<tr><td colspan='2'>PAGAMENTO MENSALIDADE</td></tr>");
+                retorno.append("<tr><td>CPF................:</td>").append("<td>").append(obj.getCpf()).append("</td></tr>");
+                retorno.append("<tr><td>Mensalista.........:</td>").append("<td>").append(obj.getNomeMensalista()).append("</td></tr>");
+                retorno.append("<tr><td>Mensalidade........:</td>").append("<td>").append(obj.getValorReceber()).append("</td></tr>");
+                retorno.append("<tr><td>Desconto...........:</td>").append("<td>").append(obj.getDescontoAtual()).append("</td></tr>");
+                retorno.append("<tr><td>Valor Recebido.....:</td>").append("<td>").append(obj.getValorRecebido()).append("</td></tr>");
+                retorno.append("<tr><td>Troco..............:</td>").append("<td>").append(obj.getTroco()).append("</td></tr>");
+                retorno.append("<tr><td>Data Pagamento.....:</td>").append("<td>").append(Util.dateToString(new Date())).append("</td></tr>");
+                retorno.append("<tr><td>Proxímo vencimento.:</td>").append("<td>").append(Util.xmlGregorianCalendarToStr(obj.getProximoVencimento())).append("</td></tr>");
+            } else {
+                retorno.append("<tr><td colspan='2'>ESTACIONAMENTO</td></tr>");
+                retorno.append("<tr><td>Entrada             </td>").append("<td>").append(Util.xmlGregorianCalendarToStr(obj.getEntrada())).append("</td></tr>");
+                retorno.append("<tr><td>Saida               </td>").append("<td>").append(Util.xmlGregorianCalendarToStr(obj.getSaida())).append("</td></tr>");
+                retorno.append("<tr><td>Permanência         </td>").append("<td>").append(obj.getPermanencia()).append("</td></tr>");
+                retorno.append("<tr><td>Limite para sair    </td>").append("<td>").append(Util.xmlGregorianCalendarToStr(obj.getLimiteParaSair())).append("</td></tr>");
 
-            retorno.append("Valor cobrado: ").append(obj.getValorCobrado()).append("<br/>");
-            retorno.append("Valor já pago: ").append(obj.getUltimoValorPago()).append("<br/>");
-            retorno.append("Desconto: ").append(obj.getDesconboAcumulado()).append("<br/>");
-            retorno.append("Valor a receber: ").append(obj.getValorReceber()).append("<br/>");
-            retorno.append("Valor recebido: ").append(obj.getValorRecebido()).append("<br/>");
-            retorno.append("Troco: ").append(obj.getTroco()).append("<br/>");
-            retorno.append("Placa do veiculo: ").append(obj.getPlacaVeiculo()).append("<br/>");
+                retorno.append("<tr><td>Valor cobrado       </td>").append("<td>").append(obj.getValorCobrado()).append("</td></tr>");
+                retorno.append("<tr><td>Valor já pago       </td>").append("<td>").append(obj.getUltimoValorPago()).append("</td></tr>");
+                retorno.append("<tr><td>Desconto            </td>").append("<td>").append(obj.getDesconboAcumulado()).append("</td></tr>");
+                retorno.append("<tr><td>Valor a receber     </td>").append("<td>").append(obj.getValorReceber()).append("</td></tr>");
+                retorno.append("<tr><td>Valor recebido      </td>").append("<td>").append(obj.getValorRecebido()).append("</td></tr>");
+                retorno.append("<tr><td>Troco               </td>").append("<td>").append(obj.getTroco()).append("</td></tr>");
+                retorno.append("<tr><td>Placa do veiculo    </td>").append("<td>").append(obj.getPlacaVeiculo()).append("</td></tr>");
+            }
         }
 
-        retorno.append("</p>");
-        retorno.append("</body>");
-        retorno.append("</html>");
+        Util.setFooter(retorno, tp, null);
         return retorno;
+    }
+
+    public static void setHeader(StringBuilder sb, TipoImpressao ti, String text) {
+        if ((!"".equals(text)) && (text != null)) {
+            if (ti.equals(TipoImpressao.BEMATHEC_TEXT)) {
+                sb.append(text);
+            } else {
+                sb.append("<html>");
+                sb.append("<head>");
+                sb.append("</head>");
+                sb.append("<body>");
+                sb.append("<p style='margin-top: 0'>");
+                sb.append("<table>");
+                sb.append(text);
+            }
+        }
+    }
+
+    public static void setFooter(StringBuilder sb, TipoImpressao ti, String text) {
+        if ((!"".equals(text)) && (text != null)) {
+            if (ti.equals(TipoImpressao.BEMATHEC_TEXT)) {
+                sb.append(text);
+            } else {
+                sb.append("</table>");
+                sb.append("</p>");
+                sb.append("</body>");
+                sb.append("</html>");
+                sb.append(text);
+            }
+        }
     }
 
     public static void addHotKey(javax.swing.JFrame frame, final javax.swing.JComponent jComponent, Integer keyEvent) {
@@ -135,6 +204,5 @@ public class Util {
             }
         });
     }
-    
 
 }

@@ -5,6 +5,8 @@
  */
 package br.com.dyantec.gui.movimentoCaixa;
 
+import br.com.dyantec.util.Impressora;
+import br.com.dyantec.util.Parametros;
 import br.com.dyantec.util.Util;
 import br.com.dynatec.controlador.ws.MovimentoCaixaHelperVO;
 import br.com.dynatec.controlador.ws.TipoMovimento;
@@ -21,14 +23,13 @@ public class JFrameMovimentoCaixa extends javax.swing.JFrame {
     /**
      * Creates new form JFrameMovimentoCaixa
      */
-    
     //Deve receber ENTRADA OU RETIRADA
     private TipoMovimento tipoMovimento;
     private Date dataTransacaoFinanceira;
     private Integer idUsuario;
-
+    
     public JFrameMovimentoCaixa() {
-        initComponents();        
+        initComponents();
     }
 
     /**
@@ -53,6 +54,7 @@ public class JFrameMovimentoCaixa extends javax.swing.JFrame {
         txtObservacao = new javax.swing.JTextArea();
         jToggleButton1 = new javax.swing.JToggleButton();
         jToggleButton2 = new javax.swing.JToggleButton();
+        jLabel8 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -97,37 +99,48 @@ public class JFrameMovimentoCaixa extends javax.swing.JFrame {
             }
         });
 
+        jLabel8.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        jLabel8.setText("Movimento de Caixa");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(55, 55, 55)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel7)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel1))
-                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblTipoDeposito)
-                    .addComponent(lblDataOperacao)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(19, 19, 19)
+                        .addGap(35, 35, 35)
+                        .addComponent(jLabel8))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel1))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblTipoDeposito)
+                            .addComponent(lblDataOperacao)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(txtValor, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txtData, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
                         .addComponent(jToggleButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jToggleButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(txtValor, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(txtData, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(24, Short.MAX_VALUE))
+                        .addComponent(jToggleButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(34, 34, 34)))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(38, 38, 38)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addComponent(jLabel8)
+                .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(lblTipoDeposito))
@@ -151,7 +164,7 @@ public class JFrameMovimentoCaixa extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jToggleButton1)
                     .addComponent(jToggleButton2))
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         pack();
@@ -169,14 +182,19 @@ public class JFrameMovimentoCaixa extends javax.swing.JFrame {
         movimento.setAtivo(true);
         movimento.setDataMovimento(Util.toXMLGregorianCalendar(dataTransacaoFinanceira));
         movimento.setCreatedAt(Util.toXMLGregorianCalendar(new Date()));
-        movimento.setUpdatedAt(Util.toXMLGregorianCalendar(new Date()));        
+        movimento.setUpdatedAt(Util.toXMLGregorianCalendar(new Date()));
         movimento.setTipoMovimento(this.getTipoMovimento());
         movimento.setValor(valor);
         movimento.setObservacao(txtObservacao.getText());
         movimento.setUsuarioId(this.getIdUsuario());
 
         MovimentoCaixaHelperVO movimentoCaixa = registrarMovimento(movimento);
-        JOptionPane.showMessageDialog(null, movimentoCaixa.getMensagem());
+        int i = JOptionPane.showConfirmDialog(null, movimentoCaixa.getMensagem() + "\n Deseja imprimir um comprovante?",
+                "Imprimir", JOptionPane.YES_NO_OPTION);
+        if (i == JOptionPane.YES_OPTION) {
+            StringBuilder texto = Util.cupomMovimentoCaixa(tipoMovimento, valor, dataTransacaoFinanceira, txtObservacao.getText().toString(), this.idUsuario, "");
+            Impressora.imprimir(texto.toString());
+        };
 
         txtValor.setText("");
         txtData.setText("");
@@ -235,6 +253,7 @@ public class JFrameMovimentoCaixa extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JToggleButton jToggleButton2;
@@ -268,7 +287,7 @@ public class JFrameMovimentoCaixa extends javax.swing.JFrame {
     public void setIdUsuario(Integer idUsuario) {
         this.idUsuario = idUsuario;
     }
-    
+
     public void atualizaVisualizacao() {
         lblDataOperacao.setText(Util.dateToString(this.dataTransacaoFinanceira));
         txtData.setText(Util.dateToString(new Date()));
@@ -276,7 +295,7 @@ public class JFrameMovimentoCaixa extends javax.swing.JFrame {
     }
 
     private static MovimentoCaixaHelperVO registrarMovimento(br.com.dynatec.controlador.ws.MovimentoCaixaHelperVO movimentoCaixa) {
-        br.com.dynatec.controlador.ws.AcessoControle_Service service = new br.com.dynatec.controlador.ws.AcessoControle_Service();
+        br.com.dynatec.controlador.ws.AcessoControle_Service service = new br.com.dynatec.controlador.ws.AcessoControle_Service(Parametros.WSDL_WEBSERVICE);
         br.com.dynatec.controlador.ws.AcessoControle port = service.getAcessoControlePort();
         return port.registrarMovimento(movimentoCaixa);
     }

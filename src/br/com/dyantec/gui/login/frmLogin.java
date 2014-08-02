@@ -23,7 +23,6 @@ public class frmLogin extends javax.swing.JFrame {
      * Creates new form frmLogin
      */
     public frmLogin() {
-        System.out.print(Parametros.WSDL_WEBSERVICE);
         initComponents();
         Util.addHotKey(this, jbtnConfirmar, KeyEvent.VK_ENTER);
         jTextField1.requestFocus();
@@ -141,7 +140,8 @@ public class frmLogin extends javax.swing.JFrame {
                 frmAcesso.setExtendedState(JFrame.MAXIMIZED_BOTH);
                 frmAcesso.setLocationRelativeTo(null);
                 frmAcesso.setUsuarioId(Integer.valueOf(retorno.getUsuarioId()));
-                frmAcesso.setUsuarioNome(retorno.getPessoaNome());                
+                frmAcesso.setUsuarioNome(retorno.getPessoaNome());   
+                frmAcesso.atualizaVisualizacao();
                 frmAcesso.setVisible(true);
                 this.dispose();
             }
