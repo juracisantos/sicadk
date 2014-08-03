@@ -15,7 +15,7 @@ import javax.swing.JOptionPane;
  */
 public class Impressora {
 
-    public static void imprimir(String texto) {
+    public static void imprimir(String texto) {        
         try {            
             Integer a;
             a = 0 / 10;
