@@ -281,9 +281,10 @@ public class JfrmPagamentoMensalista extends javax.swing.JFrame {
         jbtnConfirmar.setEnabled(!"ok".equals(consulta.getStatus()));
 
         cupom.setText(Util.cupom(consulta, TipoImpressao.HTML).toString());
+        
+        atualizarValoresTela();
 
         txtCartao.setText("");
-
     }//GEN-LAST:event_jbtnConfirmarActionPerformed
 
     private void jbtnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnImprimirActionPerformed
@@ -307,10 +308,7 @@ public class JfrmPagamentoMensalista extends javax.swing.JFrame {
 
             consulta = consultaCartao(cartao, dataTransacao, null, desconto, valorRecebido, this.getIdUsuario(), null);
 
-            jlblCPF.setText(consulta.getCpf());
-            jlblNomeMensalista.setText(consulta.getNomeMensalista());
-            jlblValorMensalidade.setText("R$ " + consulta.getValorReceber());
-            jlblTroco.setText("R$ " + consulta.getTroco());
+            atualizarValoresTela();
 
             cupom.setText(Util.cupom(consulta, TipoImpressao.HTML).toString());
 
@@ -318,6 +316,13 @@ public class JfrmPagamentoMensalista extends javax.swing.JFrame {
 //        jbtnConfirmar.setEnabled(true);
         }
     }//GEN-LAST:event_jToggleButton2ActionPerformed
+
+    private void atualizarValoresTela() {
+        jlblCPF.setText(consulta.getCpf());
+        jlblNomeMensalista.setText(consulta.getNomeMensalista());
+        jlblValorMensalidade.setText("R$ " + consulta.getValorReceber());
+        jlblTroco.setText("R$ " + consulta.getTroco());
+    }
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         this.setVisible(false);

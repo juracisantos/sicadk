@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
@@ -435,7 +436,7 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
     }//GEN-LAST:event_jbtnConsultarActionPerformed
 
     private void jbtnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnConfirmarActionPerformed
-        confirmar();
+        confirmar();        
     }//GEN-LAST:event_jbtnConfirmarActionPerformed
 
     private void confirmar() throws NumberFormatException {
@@ -454,6 +455,15 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
         atualizarValoresTela(consulta);
         txtCartao.setText("");
         txtCartao.requestFocus();
+        
+        if (this.consulta.getValorCobrado() > 0d) {
+            Object[] options = {"Sim, desejo imprimir", "Não, não imprimir"};
+            int i = JOptionPane.showOptionDialog(null, "Deseja imprimir o cupom?", "Imprimir Cupom", 
+                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+            if (i == JOptionPane.YES_OPTION) {
+                imprimir();
+            }
+        }
     }
 
     private void btnDepositoCaixa2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDepositoCaixa2ActionPerformed
@@ -517,7 +527,11 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
     private void txtCartaoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCartaoKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             consultarCartao();
-            txtDesconto.requestFocus();
+            if ("".equals(txtCartao.getText())) {
+                txtCartao.requestFocus();
+            } else {
+                 txtDesconto.requestFocus();
+            }
         }
     }//GEN-LAST:event_txtCartaoKeyPressed
 
@@ -622,17 +636,21 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
         Tabela tabela = (Tabela) jComboBoxTabelas.getSelectedItem();
 
         if ("".equals(cartao)) {
-            JOptionPane.showMessageDialog(null, "Deve ser informado um número de cartão.");
+            JOptionPane.showMessageDialog(null, "Deve ser informado um número de cartão.");            
         } else {
-            String dataTransacao = Util.dateToString(new Date());
+            try {
+                String dataTransacao = Util.dateToString(new Date());
 
-            Double desconto = "".equals(txtDesconto.getText()) ? 0.0 : Double.valueOf(txtDesconto.getText().replace(".", "").replace(",", "."));
-            Double valorRecebido = "".equals(txtValorRecebido.getText()) ? 0.0 : Double.valueOf(txtValorRecebido.getText().replace(".", "").replace(",", "."));
-            String placaCarro = txtPlacaVeiculo.getText();
+                Double desconto = "".equals(txtDesconto.getText()) ? 0.0 : Double.valueOf(txtDesconto.getText().replace(".", "").replace(",", "."));
+                Double valorRecebido = "".equals(txtValorRecebido.getText()) ? 0.0 : Double.valueOf(txtValorRecebido.getText().replace(".", "").replace(",", "."));
+                String placaCarro = txtPlacaVeiculo.getText();
 
-            consulta = consultaCartao(cartao, dataTransacao, tabela.getId(), desconto, valorRecebido, this.getUsuarioId(), placaCarro);
+                consulta = consultaCartao(cartao, dataTransacao, tabela.getId(), desconto, valorRecebido, this.getUsuarioId(), placaCarro);
 
-            cupom.setText(Util.cupom(consulta, TipoImpressao.HTML).toString());
+                cupom.setText(Util.cupom(consulta, TipoImpressao.HTML).toString());
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Não foi possível vávlidar o acesso. " + e.getMessage());                
+            }
             limparValoresTela();
             atualizarValoresTela(consulta);
 
@@ -640,20 +658,28 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
         }
     }
 
-    public void atualizarValoresTela(RetornoConsultaCartaoVO acesso) {
-        jlblPermanencia.setText(acesso.getPermanencia());
+    public void atualizarValoresTela(final RetornoConsultaCartaoVO acesso) {
+        new Thread(new Runnable() {
+            public void run() {
+                jlblPermanencia.setText(acesso.getPermanencia());
 
-        jlblTempoDisponivel.setText(String.valueOf(acesso.getLimiteParaSairEmMinutos()));
-        jlblTroco.setText("R$ " + String.valueOf(acesso.getTroco()));
-        jlblValorReceber.setText("R$ " + String.valueOf(acesso.getValorReceber()));
+                jlblTempoDisponivel.setText(String.valueOf(acesso.getLimiteParaSairEmMinutos()));
+                jlblTroco.setText("R$ " + String.valueOf(acesso.getTroco()));
+                jlblValorReceber.setText("R$ " + String.valueOf(acesso.getValorReceber()));
+            }
+        }).start();
     }
 
     public void limparValoresTela() {
-        jlblTroco.setText("R$ 0,00");
-        jlblValorReceber.setText("R$ 0,00");
-        txtDesconto.setText("");
-        txtValorRecebido.setText("");
-        txtPlacaVeiculo.setText("");
+        new Thread(new Runnable() {
+            public void run() {
+                jlblTroco.setText("R$ 0,00");
+                jlblValorReceber.setText("R$ 0,00");
+                txtDesconto.setText("");
+                txtValorRecebido.setText("");
+                txtPlacaVeiculo.setText("");
+            }
+        }).start();
     }
 
     private static RetornaTabelasHelperVO recuperaTabelas_1() {
@@ -707,6 +733,7 @@ public class jfrmAcesso extends javax.swing.JFrame implements Observer {
         br.com.dynatec.controlador.ws.AcessoControle_Service service = new br.com.dynatec.controlador.ws.AcessoControle_Service(Parametros.WSDL_WEBSERVICE);
         br.com.dynatec.controlador.ws.AcessoControle port = service.getAcessoControlePort();
         return port.consultaCartao(cartao, dataTransasaoFinanceira, codTabela, desconto, valorRecebido, usuarioId, placaCarro);
+
     }
 
     private class AcaoConsultar extends AbstractAction {

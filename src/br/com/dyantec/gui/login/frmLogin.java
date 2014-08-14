@@ -132,19 +132,24 @@ public class frmLogin extends javax.swing.JFrame {
 
     private void jbtnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnConfirmarActionPerformed
         if (("".equals(jTextField1.getText())) || ("".equals(jPasswordField1.getText()))) {
-            jLabel4.setText("Informe o Usuário e a Senha antes de autenticar.");
+            JOptionPane.showMessageDialog(null, "Informe o Usuário e a Senha antes de autenticar.");
         } else {
-            RetornoLoginVO retorno = login(jTextField1.getText(), jPasswordField1.getText());
-            if (retorno.getStatus().equals("ok")) {
-                jfrmAcesso frmAcesso = new jfrmAcesso();
-                frmAcesso.setExtendedState(JFrame.MAXIMIZED_BOTH);
-                frmAcesso.setLocationRelativeTo(null);
-                frmAcesso.setUsuarioId(Integer.valueOf(retorno.getUsuarioId()));
-                frmAcesso.setUsuarioNome(retorno.getPessoaNome());   
-                frmAcesso.atualizaVisualizacao();
-                frmAcesso.setVisible(true);
-                this.dispose();
+            try {
+                RetornoLoginVO retorno = login(jTextField1.getText(), jPasswordField1.getText());
+                if (retorno.getStatus().equals("ok")) {
+                    jfrmAcesso frmAcesso = new jfrmAcesso();
+                    frmAcesso.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                    frmAcesso.setLocationRelativeTo(null);
+                    frmAcesso.setUsuarioId(Integer.valueOf(retorno.getUsuarioId()));
+                    frmAcesso.setUsuarioNome(retorno.getPessoaNome());
+                    frmAcesso.atualizaVisualizacao();
+                    frmAcesso.setVisible(true);
+                    this.dispose();
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Não foi possível autenticar." + e.getMessage());
             }
+
         }
     }//GEN-LAST:event_jbtnConfirmarActionPerformed
 
@@ -201,8 +206,8 @@ public class frmLogin extends javax.swing.JFrame {
     private javax.swing.JButton jbtnConfirmar;
     // End of variables declaration//GEN-END:variables
 
-    private static RetornoLoginVO login(java.lang.String login, java.lang.String senha) {           
-        br.com.dynatec.controlador.ws.AcessoControle_Service service = new br.com.dynatec.controlador.ws.AcessoControle_Service(Parametros.WSDL_WEBSERVICE);        
+    private static RetornoLoginVO login(java.lang.String login, java.lang.String senha) {
+        br.com.dynatec.controlador.ws.AcessoControle_Service service = new br.com.dynatec.controlador.ws.AcessoControle_Service(Parametros.WSDL_WEBSERVICE);
         br.com.dynatec.controlador.ws.AcessoControle port = service.getAcessoControlePort();
         return port.login(login, senha);
     }
